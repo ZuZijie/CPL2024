@@ -34,7 +34,7 @@ int main()
             scanf("%d",&arr[i][j]);
         }
     }
-    for(int k=1;k<=n*m/2;k++)
+    for(int k=1;k<(n*m/2+1);k++)
     {
         findTwoIn2DArray(arr,n+2,m+2,k,&firstrow,&firstcol,&secondrow,&secondcol);
         int temp=1;
@@ -54,11 +54,10 @@ int main()
                 break;
             }
         }
-       if(temp){
+       if(temp==1){
             ans[k]=1;
             arr[firstrow][firstcol]=0;
             arr[secondrow][secondcol]=0;
-            break;
         }
         temp=1;
         for(int i=firstrow+1;i<=n+1;i++)
@@ -77,11 +76,10 @@ int main()
                 break;
             }
         }
-        if(temp){
+        if(temp==1){
             ans[k]=1;
             arr[firstrow][firstcol]=0;
             arr[secondrow][secondcol]=0;
-            break;
         }
         temp=1;
         //cut
@@ -101,14 +99,13 @@ int main()
                 break;
             }
         }
-        if(temp){
+        if(temp==1){
             ans[k]=1;
             arr[firstrow][firstcol]=0;
             arr[secondrow][secondcol]=0;
-            break;
         }
         temp=1;
-        for(int i=firstcol+1;i<=n+1;i++)
+        for(int i=firstcol+1;i<=m+1;i++)
         {
             if(arr[firstrow][i]!=0)
             {
@@ -116,7 +113,7 @@ int main()
                 break;
             }
         }
-        for(int i=secondcol+1;i<=n+1;i++)
+        for(int i=secondcol+1;i<=m+1;i++)
         {
             if(arr[secondrow][i]!=0)
             {
@@ -124,11 +121,10 @@ int main()
                 break;
             }
         }
-        if(temp){
+        if(temp==1){
             ans[k]=1;
             arr[firstrow][firstcol]=0;
             arr[secondrow][secondcol]=0;
-            break;
         }
         
         

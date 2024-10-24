@@ -1,35 +1,41 @@
 #include<stdio.h>
-#include<ctype.h>
-#include<string.h>
-#define N 150
+#include<math.h>
+#include<stdlib.h>
 
-/*
- * 疑似要用到的新东西
- * strlen
- * isdigit
-*/
-
-
-int main (void)
+int mid = (int)pow(2,5);
+int main(void)
 {
-    int amount;
-    int length_string = 0;
-    char rubbish;
-    char string[150];
-    char string1[16] = {0};
-    scanf("%d", &amount);
-    getchar();
-    for(int i = 0, j = 0; i < amount; i++)
+    printf("%d\n", (int)pow(2,5));
+    char result_s;
+    int result_num = 0;
+    long start = 0;
+    int end = (int)pow(2,10);
+    while(1)
     {
-        scanf("%s", &string1);
-        getchar();
-        length_string = strlen(string1);
-        for(int k = 0; k < length_string; k++)
+        scanf("%s", &result_s);
+        switch(result_s)
         {
-            string[j + k] =  string1[k];
+            case 'G':
+                result_num = 1;
+                break;
+            case 'L':
+                result_num = 2;
+                break;
+            case 'E':
+                return 0;
+            default:
+                return 0;
         }
-        j += length_string;
-        string[++j] = ' ';
+        if(result_num == 1)
+        {
+            end = mid;
+            mid = start + (end - start) / 2;
+        }
+        else if(result_num == 2)
+        {
+            start = mid;
+            mid = start + (end - start) / 2;
+        }
+        printf("%d\n", mid);
     }
-    printf("%s", string);
 }
