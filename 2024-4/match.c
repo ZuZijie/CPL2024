@@ -34,7 +34,7 @@ int main()
             scanf("%d",&arr[i][j]);
         }
     }
-    for(int k=1;k<(n*m/2+1);k++)
+    for(int k=1;k<((n*m)/2+1);k++)
     {
         findTwoIn2DArray(arr,n+2,m+2,k,&firstrow,&firstcol,&secondrow,&secondcol);
         int temp=1;
