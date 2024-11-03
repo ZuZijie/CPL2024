@@ -69,8 +69,13 @@ void converter(int num) {
 }
 int main ()
 {
+    double temp;
     int n;
-    scanf("%d",&n);
+    scanf("%f",&temp);
+    if(temp<-2147483647.0)printf("minus two billion one hundred and forty-seven million four hundred and eighty-three thousand six hundred and forty-eight");
+    else 
+    {
+        n=(int)temp;
     if(n<0)
     {
         printf("minus ");
@@ -96,4 +101,5 @@ int main ()
         converter(n%1000);
     }
     return 0;
+    }
 }
