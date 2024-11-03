@@ -71,7 +71,7 @@ int main ()
 {
     double temp;
     int n;
-    scanf("%f",&temp);
+    scanf("%lf",&temp);
     if(temp<-2147483647.0)printf("minus two billion one hundred and forty-seven million four hundred and eighty-three thousand six hundred and forty-eight");
     else 
     {
@@ -100,6 +100,7 @@ int main ()
     {
         converter(n%1000);
     }
+    if(n==0)printf("zero");
     return 0;
     }
 }
