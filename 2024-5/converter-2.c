@@ -11,17 +11,17 @@ void converter(int num) {
 
     if (h) {
         switch (h) {
-            case 1: printf("one hundred "); break;
-            case 2: printf("two hundred "); break;
-            case 3: printf("three hundred "); break;
-            case 4: printf("four hundred "); break;
-            case 5: printf("five hundred "); break;
-            case 6: printf("six hundred "); break;
-            case 7: printf("seven hundred "); break;
-            case 8: printf("eight hundred "); break;
-            case 9: printf("nine hundred "); break;
+            case 1: printf("one hundred"); break;
+            case 2: printf("two hundred"); break;
+            case 3: printf("three hundred"); break;
+            case 4: printf("four hundred"); break;
+            case 5: printf("five hundred"); break;
+            case 6: printf("six hundred"); break;
+            case 7: printf("seven hundred"); break;
+            case 8: printf("eight hundred"); break;
+            case 9: printf("nine hundred"); break;
         }
-        if(t+o!=0)printf("and ");
+        if(t+o!=0)printf(" and ");
     }
 
     if (t == 1) {
@@ -96,7 +96,7 @@ int main ()
         converter((n%1000000)/1000);
         printf(" thousand ");
     }
-    if(n%100!=0)
+    if(n%1000!=0)
     {
         converter(n%1000);
     }
