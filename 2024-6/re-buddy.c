@@ -1,8 +1,8 @@
 #include "stdio.h"
 #include "math.h"
-void SplitArray(int a[][2],int n)
+void SplitArray(int a[][2],int n,int s)
 {
-    for(int i=9998;i>=n;i--)
+    for(int i=s-1;i>=n;i--)
     {
         a[i+1][0]=a[i][0];
         a[i+1][1]=a[i][1];
@@ -14,21 +14,21 @@ void SplitArray(int a[][2],int n)
 int converter(int n)
 {
     int i = 0;
-    while ((1 << i) < n) // 使用移位运算计算 2^i
+    while ((int)pow(2,i)< n)
     {
         i++;
     }
     return i;
 }
-int arr[10000][2];
+int arr[100000][2];
 int main()
 {
     int n,q;
     int count=0;
     int size=1;
     scanf("%d %d",&n,&q);
-    arr[0][0]=q;
-    for(int i=0;i<10000;i++)
+    arr[0][0]=n;
+    for(int i=0;i<100000;i++)
     {
         arr[i][1]=0;
     }
@@ -59,19 +59,28 @@ int main()
                for(int j=0;j<size;j++)
                {
                     if(arr[j][0]==tempMem&&arr[j][1]==0)
+                    {
+                        temp=1;
+                        tempPosition=j;
+                    }
+                if(temp==1)break;
+               }
+                if(temp==1)
                 {
-                    temp=1;
-                    tempPosition=j;
-                    break;
-                }
-                for(int j=0;j<tempMem-mem;j++)
+                  /* for(int j=0;j<tempMem-mem;j++)
                 {
-                    SplitArray(arr,tempPosition);
+                    SplitArray(arr,tempPosition,size);
+                    size++;
+                }*/
+                while(tempMem>mem)
+                {
+                    tempMem--;
+                    SplitArray(arr,tempPosition,size);
                     size++;
                 }
                 arr[tempPosition][1]=id;
-               } 
-            }
+                }
+             }
             
         }
         if(input=='Q')
@@ -81,6 +90,7 @@ int main()
             {
                 printf("%d ",arr[j][1]);
             }
+            printf("\n");
         }
     }
     return 0;
