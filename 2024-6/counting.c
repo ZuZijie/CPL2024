@@ -3,7 +3,7 @@ int main()
 {
     int R,C;
     scanf("%d %d",&R,&C);
-    char arr[2000][2000];
+    char arr[200][200]={'0'};
     int sum=0;
     for(int i=1;i<R+1;i++)
     {
@@ -14,7 +14,7 @@ int main()
     }
     for(int i=1;i<R+1;i++)
     {
-        for(int j=1;j<C;j++)
+        for(int j=2;j<C;j++)
         {
             if(arr[i][j]=='/'&&arr[i][j+1]=='\\')
             {

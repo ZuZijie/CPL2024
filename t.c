@@ -1,37 +1,58 @@
 #include <stdio.h>
-#include <ctype.h>
+#include <limits.h>
+#include <stdlib.h>
 
-void formatSentence(char *input, char *output) {
-    int i = 0, j = 0;
-    int firstWord = 1; // 
+#define MAX_N 1000
+#define MAX_M 1000
 
-    while (input[i] != '\0') {
-        if (isupper(input[i])) { 
-            if (!firstWord) {
-                output[j++] = ' '; 
+int V[MAX_N][MAX_M]; 
+int ansPosi[MAX_N * MAX_M][2];
+int ansN = 0;
+int max_sum = INT_MIN; 
+
+int calculateValue(int center_x, int center_y, int radius) {
+    int value = 0;
+    for (int dx = -radius; dx <= radius; dx++) {
+        for (int dy = -radius; dy <= radius; dy++) {
+            if ((dx * dx + dy * dy) <= radius * radius) {
+                value += V[center_x + dx][center_y + dy];
             }
-            firstWord = 0; 
-            output[j++] = tolower(input[i]);
-        } else { 
-            output[j++] = input[i];
         }
-        i++;
     }
-    output[j] = '\0';
+    return value;
 }
 
 int main() {
-    char input[10240];  
-    char output[10240];  
+    int n, m, d;
+    scanf("%d %d %d", &n, &m, &d);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            scanf("%d", &V[i][j]);
+        }
+    }
+    
 
-    scanf("%s", input); 
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            int value = calculateValue(i, j, d);
 
-    formatSentence(input, output);
-    if (output[0] != '\0') {
-        output[0] = toupper(output[0]);
+            if (value > max_sum) {
+                max_sum = value;
+                ansN = 1;
+                ansPosi[0][0] = i;
+                ansPosi[0][1] = j;
+            } else if (value == max_sum) {
+                ansPosi[ansN][0] = i;
+                ansPosi[ansN][1] = j;
+                ansN++;
+            }
+        }
     }
 
-    printf("%s\n", output);
-
+    printf("%d %d\n", max_sum, ansN);
+    for (int i = 0; i < ansN; i++) {
+        printf("%d %d\n", ansPosi[i][0], ansPosi[i][1]);
+    }
+    
     return 0;
 }
