@@ -1,7 +1,7 @@
     #include "stdio.h"
     #include "string.h"
     #include "stdlib.h"
-    void mystrcat(char *str1,char *str2)
+   void mystrcat(char *str1,char *str2)
     {
         int length1=strlen(str1);
         int length2=strlen(str2);
@@ -9,6 +9,26 @@
         {
             *(str1+i)=*(str2+i-length1);
         }
+    }
+    int findsamelength(char *str1, char *str2) {
+    int length1 = strlen(str1);
+    int length2 = strlen(str2);
+    int samelength = 0;
+    for (int i = length1 - 1; i >= 0; i--) {
+        int j = 0;
+        char *tempstr;
+        tempstr=(char *)malloc(1000*sizeof(char));
+        for(int j=0;j<i;j++)
+        {
+            *(tempstr+j)=*(str1+length1-i+j-1);
+        }
+        if(strstr(str2,tempstr)==str2)
+        {
+            samelength=i+1;
+            break;
+        }
+    }
+    return samelength;
     }
     int main()
     {
@@ -23,25 +43,13 @@
             scanf("%s %s",str1,str2);
             int length1=strlen(str1);
             int length2=strlen(str2);
-            int temp=0;
-            for(int i=0;i<length2;i++)
-            {
-                char *tempstr;
-                tempstr=(char *)malloc(1000*sizeof(char));
-                for(int j=0;j<=i;j++)
-                {
-                    *(tempstr+j)=*(str1+length1-i+j);
-                    
-                }
-                char *posi=strstr(str2,tempstr);
-                if(tempstr==str2)temp++;
-                else break;
-            }
+            int samelength=length1;          
             char *tempstr;
+            samelength=findsamelength(str1,str2);
             tempstr=(char *)malloc(1000*sizeof(char));
-            for(int i=temp;i<length2;i++)
+            for(int i=samelength;i<length2;i++)
             {
-                *(tempstr+i-temp)=*(str2+i);
+                *(tempstr+i-samelength)=*(str2+i);
             }
             mystrcat(str1,tempstr);
             printf("%s\n",str1);
