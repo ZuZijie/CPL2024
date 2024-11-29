@@ -1,55 +1,110 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "stdio.h"
+#include "string.h"
+#include "stdlib.h"
 
-void mystrcat(char *s1, char *s2) {
-    int len1 = strlen(s1);
-    int len2 = strlen(s2);
-
-    for (int i = 0; i < len2; i++) {
-        *(s1+len1 + i) = *(s2+i);
+void mystrcat(char *str1, const char *str2) {
+    int length1 = strlen(str1);
+    int i = 0;
+    while (str2[i] != '\0') {
+        str1[length1 + i] = str2[i];
+        i++;
     }
 }
 
 int main() {
     int T;
     scanf("%d", &T);
-
-
-
+    getchar(); 
     for (int t = 0; t < T; t++) {
-        char *s1 = (char *)malloc(2000 * sizeof(char));
-        char *s2 = (char *)malloc(1000 * sizeof(char));
-        memset(s1,' ',2000*sizeof(char));
-        memset(s2,' ',sizeof(char)*1000);
-        scanf("%s %s", s1, s2); 
-
-        int len1 = strlen(s1);
-        int len2 = strlen(s2);
-        int overlap = 0;
-
-
-        for (int i = 0; i < len1; i++) {
-            int match = 1; 
-            for (int j = 0; j < len1 - i && j < len2; j++) {
-                if (*(s1+i+j) != *(s2+j)) {
-                    match = 0;
-                    break;
+        char s1[1000]="", s2[1000]="", s3[10000] = ""; 
+        int ds1, ds2, size;
+        int i = 0;
+        char ch;
+        while ((ch = getchar()) != ';') 
+        {
+            s1[i] = ch;
+            i++;
+        }
+        i = 0;
+        while ((ch = getchar()) != ';') 
+        {
+            s2[i] = ch;
+            i++;
+        }
+        scanf("%d;%d;%d",&ds1,&ds2,&size);
+        int start1 = 0, start2 = 0, remainedLength = size;
+        while (remainedLength > 0) {
+            if (remainedLength > ds1) {
+                if (ds1 <= strlen(s1) - start1) {
+                    char tempstr[1000];
+                    for (int i = 0; i < ds1; i++) {
+                        tempstr[i] = s1[start1 + i];
+                    }
+                    tempstr[ds1] = '\0'; 
+                    mystrcat(s3, tempstr);
+                    start1 += ds1;
+                    remainedLength -= ds1;
                 }
+            } 
+            else if(remainedLength>(strlen(s1)-start1)&&start1!=strlen(s1))
+            {
+                char tempstr[1000];
+                for(int i=start1;i<strlen(s1);i++)
+                {
+                    tempstr[i-start1]=s1[i];
+                }
+                mystrcat(s3,tempstr);
+                remainedLength-=(strlen(s1)-start1);
+                start1=strlen(s1);
             }
-            if (match) {
-                overlap = len1 - i;
+            else if(start1==strlen(s1));
+            else 
+            {
+                char tempstr[1000];
+                for (int i = 0; i < remainedLength; i++) {
+                    tempstr[i] = s1[start1 + i];
+                }
+                tempstr[remainedLength] = '\0'; 
+                mystrcat(s3, tempstr);
+                break;
+            }
+
+            if (remainedLength > ds2) {
+                if (ds2 <= strlen(s2) - start2) {
+                    char tempstr[1000];
+                    for (int i = 0; i < ds2; i++) {
+                        tempstr[i] = s2[start2 + i];
+                    }
+                    tempstr[ds2] = '\0';  
+                    mystrcat(s3, tempstr);
+                    start2 += ds2;
+                    remainedLength -= ds2;
+                }
+            } 
+            else if(remainedLength>(strlen(s2)-start2)&&start2!=strlen(s2))
+            {
+                char tempstr[1000];
+                for(int i=start2;i<strlen(s2);i++)
+                {
+                    tempstr[i-start2]=s1[i];
+                }
+                mystrcat(s3,tempstr);
+                remainedLength-=(strlen(s2)-start2);
+                start2=strlen(s2);
+            }
+            else if(start2==strlen(s2));
+            else 
+            {
+                char tempstr[1000];
+                for (int i = 0; i < remainedLength; i++) {
+                    tempstr[i] = s2[start2 + i];
+                }
+                mystrcat(s3,tempstr);  
                 break;
             }
         }
-
-        mystrcat(s1, s2 + overlap);
-        printf("%s\n", s1);
-        free(s1);
-        free(s2);
+        s3[size]='\0';
+        printf("%s\n", s3);
     }
-
-
-
     return 0;
 }
