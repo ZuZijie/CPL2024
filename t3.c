@@ -1,120 +1,78 @@
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
 
-int IsReserved(char *input) {
-    char *reservedWords[] = { "const", "int", "float", "double", "long", "static", "void", "char", "extern", "return", "break", "enum", "struct", "typedef", "union", "goto" };
-    for (int i = 0; i < 16; i++) {
-        if (strcmp(input, reservedWords[i]) == 0) {
+int IsValidOption(char a, char rule[], int lengthOfRule) {
+    for (int i = 0; i < lengthOfRule; i++) {
+        if (a == rule[i]) {
             return 1;
         }
     }
     return 0;
 }
-int IsOperator(char *input) {
-    char *operators[] = { "+", "-", "*", "/", "=", "==", "!=", ">=", "<=", ">", "<" };
-    for (int i = 0; i < 11; i++) {
-        if (strcmp(input, operators[i]) == 0) {
-            return 1;
+
+int IsOptionRequireValue(char a, char rule[], int lengthOfRule) {
+    for (int i = 0; i < lengthOfRule; i++) {
+        if (a == rule[i]) {
+            return (i + 1 < lengthOfRule && rule[i + 1] == ':');
         }
     }
     return 0;
 }
-int IsIntegerorFloat(char *input) {
-    int numofDot = 0;
-    int len = strlen(input);
 
-    for (int i = 0; i < len; i++) {
-        if (input[i] == '.') {
-            numofDot++;
-        } else if (!isdigit(input[i])) {
-            return -1; 
-        }
-    }
-
-    if (numofDot > 1) {
-        return -1; 
-    }
-    return (numofDot == 1) ? 2 : 1; 
-}
-int IsValidVariable(char *input) {
-    int len = strlen(input);
-
-    if (isdigit(input[0])) {
-        return -1; 
-    }
-
-    for (int i = 0; i < len; i++) {
-        if (!isalnum(input[i]) && input[i] != '_') {
-            return -1; 
-        }
-    }
-
-    return 1; 
-}
-
-    char inp[10000][10000]; 
-    char ans[10000][10000]; 
 int main() {
+    char rule[102400], token[102500][1025], name[1025];
+    char *optionValues[256] = {0};
+    int tokenLength = 0;
 
-    int num = 0;          
-    char s[1000];         
+    scanf("%s", rule);
+    scanf("%s", name);
 
-    while (scanf("%s", s) != EOF) {
-        int len = strlen(s);
-        int start = 0;
-
-        for (int j = 0; j < len; j++) {
-            if (s[j] == ';') {
- 
-                if (j > start) {
-                    char temp[1000] = {0};
-                    strncpy(temp, s + start, j - start);
-                    temp[j - start] = '\0';
-                    strcpy(inp[num++], temp);
-                }
-
-
-                inp[num][0] = ';';
-                inp[num++][1] = '\0';
-                start = j + 1;
-            }
-        }
-        if (start < len) {
-            char temp[1000] = {0};
-            strcpy(temp, s + start);
-            strcpy(inp[num++], temp);
-        }
+    while (scanf("%s", token[tokenLength]) != EOF) {
+        tokenLength++;
     }
-    if (num == 0 || strcmp(inp[num - 1], ";") != 0) {
-        printf("Compile Error\n");
+
+    if (tokenLength == 0) {
+        printf("%s\n", name);
         return 0;
     }
-    for (int i = 0; i < num; i++) {
-        if (strcmp(inp[i], ";") == 0) {
-            strcpy(ans[i], "\n");
-        } else if (IsReserved(inp[i])) {
-            strcpy(ans[i], "reserved");
-        } else if (IsOperator(inp[i])) {
-            strcpy(ans[i], "operator");
-        } else if (IsIntegerorFloat(inp[i]) == 1) {
-            strcpy(ans[i], "integer");
-        } else if (IsIntegerorFloat(inp[i]) == 2) {
-            strcpy(ans[i], "float");
-        } else if (IsValidVariable(inp[i]) == 1) {
-            strcpy(ans[i], "variable");
-        } else {
-            printf("Compile Error\n");
-            return 0;
+
+    int ruleLength = strlen(rule);
+    if (token[tokenLength - 1][0] == '-') {
+        for (int i = 0; i < ruleLength; i++) {
+            if (rule[i] == token[tokenLength - 1][1] && IsOptionRequireValue(rule[i], rule, ruleLength)) {
+                printf("%s: option requires an argument -- '%c'\n", name, token[tokenLength - 1][1]);
+                return 1;
+            }
         }
     }
-    for (int i = 0; i < num; i++) {
-        if (strcmp(ans[i], "\n") == 0) {
-            printf("\n");
-        } else {
-            printf("%s ", ans[i]);
+
+    for (int i = 0; i < tokenLength; i++) {
+        if (token[i][0] == '-') {
+            if (!IsValidOption(token[i][1], rule, ruleLength)) {
+                printf("%s: invalid option -- '%c'\n", name, token[i][1]);
+                return 2;
+            }
+            if (IsOptionRequireValue(token[i][1], rule, ruleLength)) {
+                if (i + 1 < tokenLength && token[i + 1][0] != '-') {
+                    optionValues[(int)token[i][1]] = token[i + 1];
+                    i++;
+                } else {
+                    printf("%s: option requires an argument -- '%c'\n", name, token[i][1]);
+                    return 1;
+                }
+            } else {
+                optionValues[(int)token[i][1]] = NULL;
+            }
+        }
+    }
+
+    printf("%s\n", name);
+    for (int i = 0; i < ruleLength; i++) {
+        if (rule[i] != ':' && optionValues[(int)rule[i]] != NULL) {
+            printf("-%c=%s\n", rule[i], optionValues[(int)rule[i]]);
+        } else if (rule[i] != ':' && optionValues[(int)rule[i]] == NULL) {
+            printf("-%c\n", rule[i]);
         }
     }
 

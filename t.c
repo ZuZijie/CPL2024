@@ -1,110 +1,79 @@
 #include "stdio.h"
-#include "string.h"
 #include "stdlib.h"
+#include "string.h"
 
-void mystrcat(char *str1, const char *str2) {
-    int length1 = strlen(str1);
-    int i = 0;
-    while (str2[i] != '\0') {
-        str1[length1 + i] = str2[i];
-        i++;
+// 检查选项是否有效
+int IsValidOption(char a, char rule[], int lengthOfRule) {
+    for (int i = 0; i < lengthOfRule; i++) {
+        if (a == rule[i]) {
+            return 1;
+        }
     }
+    return 0;
 }
 
-int main() {
-    int T;
-    scanf("%d", &T);
-    getchar(); 
-    for (int t = 0; t < T; t++) {
-        char s1[1000]="", s2[1000]="", s3[10000] = ""; 
-        int ds1, ds2, size;
-        int i = 0;
-        char ch;
-        while ((ch = getchar()) != ';') 
-        {
-            s1[i] = ch;
-            i++;
+// 检查选项是否需要值
+int IsOptionRequireValue(char a, char rule[], int lengthOfRule) {
+    for (int i = 0; i < lengthOfRule; i++) {
+        if (a == rule[i]) {
+            return (i + 1 < lengthOfRule && rule[i + 1] == ':');
         }
-        i = 0;
-        while ((ch = getchar()) != ';') 
-        {
-            s2[i] = ch;
-            i++;
-        }
-        scanf("%d;%d;%d",&ds1,&ds2,&size);
-        int start1 = 0, start2 = 0, remainedLength = size;
-        while (remainedLength > 0) {
-            if (remainedLength > ds1) {
-                if (ds1 <= strlen(s1) - start1) {
-                    char tempstr[1000];
-                    for (int i = 0; i < ds1; i++) {
-                        tempstr[i] = s1[start1 + i];
-                    }
-                    tempstr[ds1] = '\0'; 
-                    mystrcat(s3, tempstr);
-                    start1 += ds1;
-                    remainedLength -= ds1;
-                }
-            } 
-            else if(remainedLength>(strlen(s1)-start1)&&start1!=strlen(s1))
-            {
-                char tempstr[1000];
-                for(int i=start1;i<strlen(s1);i++)
-                {
-                    tempstr[i-start1]=s1[i];
-                }
-                mystrcat(s3,tempstr);
-                remainedLength-=(strlen(s1)-start1);
-                start1=strlen(s1);
-            }
-            else if(start1==strlen(s1));
-            else 
-            {
-                char tempstr[1000];
-                for (int i = 0; i < remainedLength; i++) {
-                    tempstr[i] = s1[start1 + i];
-                }
-                tempstr[remainedLength] = '\0'; 
-                mystrcat(s3, tempstr);
-                break;
-            }
-
-            if (remainedLength > ds2) {
-                if (ds2 <= strlen(s2) - start2) {
-                    char tempstr[1000];
-                    for (int i = 0; i < ds2; i++) {
-                        tempstr[i] = s2[start2 + i];
-                    }
-                    tempstr[ds2] = '\0';  
-                    mystrcat(s3, tempstr);
-                    start2 += ds2;
-                    remainedLength -= ds2;
-                }
-            } 
-            else if(remainedLength>(strlen(s2)-start2)&&start2!=strlen(s2))
-            {
-                char tempstr[1000];
-                for(int i=start2;i<strlen(s2);i++)
-                {
-                    tempstr[i-start2]=s1[i];
-                }
-                mystrcat(s3,tempstr);
-                remainedLength-=(strlen(s2)-start2);
-                start2=strlen(s2);
-            }
-            else if(start2==strlen(s2));
-            else 
-            {
-                char tempstr[1000];
-                for (int i = 0; i < remainedLength; i++) {
-                    tempstr[i] = s2[start2 + i];
-                }
-                mystrcat(s3,tempstr);  
-                break;
-            }
-        }
-        s3[size]='\0';
-        printf("%s\n", s3);
     }
+    return 0;
+}
+    char token[102500][1025];
+int main() {
+    char rule[10240], name[1025];
+
+    char *optionValues[10240] = {0};  
+    int tokenLength = 0;
+    scanf("%s", rule);
+    scanf("%s", name);
+    while (tokenLength < 102500 && scanf("%s", token[tokenLength]) != EOF) {
+        tokenLength++;
+    }
+
+    if (tokenLength == 0) {
+        printf("%s\n", name);
+        return 0;
+    }
+    if (token[tokenLength - 1][0] == '-') {
+        int ruleLength = strlen(rule);
+        for (int i = 0; i < ruleLength; i++) {
+            if (rule[i] == token[tokenLength - 1][1] && IsOptionRequireValue(rule[i], rule, ruleLength)) {
+                printf("%s: option requires an argument -- '%c'\n", name, token[tokenLength - 1][1]);
+                return 1;
+            }
+        }
+    }
+    int ruleLength = strlen(rule);
+    for (int i = 0; i < tokenLength; i++) {
+        if (token[i][0] == '-') {  
+            if (strlen(token[i]) < 2 || !IsValidOption(token[i][1], rule, ruleLength)) {
+                printf("%s: invalid option -- '%c'\n", name, token[i][1]);
+                return 2;
+            }
+            for (int j = 0; j < ruleLength; j++) {
+                if (token[i][1] == rule[j] && IsOptionRequireValue(rule[j], rule, ruleLength)) {
+                    if (i + 1 >= tokenLength || token[i + 1][0] == '-') {
+                        printf("%s: option requires an argument -- '%c'\n", name, token[i][1]);
+                        return 1;
+                    }
+                    optionValues[(int)token[i][1]] = token[i + 1];  
+                    i++;  
+                }
+            }
+        }
+    }
+
+    printf("%s\n", name);
+    for (int i = 0; i < ruleLength; i++) {
+        if (rule[i] != ':' && optionValues[(int)rule[i]] != NULL) {
+            printf("-%c=%s\n", rule[i], optionValues[(int)rule[i]]);
+        } else if (rule[i] != ':' && optionValues[(int)rule[i]] == NULL) {
+            printf("-%c\n", rule[i]);
+        }
+    }
+
     return 0;
 }
