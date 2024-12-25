@@ -102,13 +102,14 @@ int main()
                         else
                         {
                         totalLength++;
-                        list=malloc(sizeof(node));
-                        list[totalLength].prev=NULL;
-                        list[totalLength].c=str[i];
-                        if(IsUorL(str[i])==1)list[totalLength].type=u;
-                        else list[totalLength].type=l;
-                        list[totalLength].last_same=NULL;
-                        tail=&list[totalLength];
+                        node tempnode;
+                        
+                        //list[totalLength].prev=NULL;
+                        //list[totalLength].c=str[i];
+                        //if(IsUorL(str[i])==1)list[totalLength].type=u;
+                        //else list[totalLength].type=l;
+                        //list[totalLength].last_same=NULL;
+                        //tail=&list[totalLength];
                         }
                     }
             }
