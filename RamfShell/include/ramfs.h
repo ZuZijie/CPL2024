@@ -28,7 +28,8 @@
 typedef struct node
 {
   enum { FNODE, DNODE } type;
-  struct node **dirents; // if DTYPE child dir
+  struct node   * dirents[4096];
+  // if DTYPE child dir
   void *content;
   int nrde;//num of dirents
   char *name;
@@ -42,7 +43,7 @@ typedef struct FD
   int flags;
   node *f;
 } FD;
-
+extern struct node *root;
 typedef intptr_t ssize_t;
 typedef uintptr_t size_t;
 typedef long off_t;
@@ -58,3 +59,8 @@ int runlink(const char *pathname);
 void init_ramfs();
 void close_ramfs();
 node *find(const char *pathname,node *current_dir);
+void init_new_node(node *new_node);
+int rmkfile(const char *pathname);
+void free_node(node *root);
+node *findFatherNode(const char *pathname);
+char *FatherNodePathName(char *pathname);
